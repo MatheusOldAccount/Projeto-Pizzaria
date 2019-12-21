@@ -41,8 +41,8 @@ create table if not exists pedido(
 create table if not exists ProdutoPedidos (
 	id int not null auto_increment,
     data_hora datetime,
-    id_produto int not null,
-    id_pedido int not null,
+    id_produto int,
+    id_pedido int,
     foreign key (id_produto) references produto (id),
     foreign key (id_pedido) references pedido (id),
     primary key(id)
