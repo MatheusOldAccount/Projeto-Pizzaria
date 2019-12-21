@@ -1,11 +1,20 @@
 from tkinter import *
+from tkinter import messagebox
 
 
 class Principal():
     def entrar(self):
-        import projeto.window_adm as new
-        self.janela.destroy()
-        new.Window()
+        if len(self.user.get()) == 0 and len(self.password.get()) == 0:
+            messagebox.showinfo('Erro', 'Ambos campos estão vazios')
+        elif len(self.user.get()) == 0:
+            messagebox.showinfo('Erro', 'O campo do usuário está vazio')
+        elif len(self.password.get()) == 0:
+            messagebox.showinfo('Erro', 'O campo da senha está vazio')
+        else:
+            import projeto.window_adm as new
+            if new.verifica_login(self.user.get(), self.password.get()):
+                self.janela.destroy()
+                new.Window()
 
     def on_enter(self, e):
         self.entrar['background'] = '#ba0601'

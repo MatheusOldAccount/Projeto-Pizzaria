@@ -21,7 +21,8 @@ def registros_usuarios():
         messagebox.showinfo('Erro', 'Não foi possível se conectar ao banco de dados')
         exit()
     else:
-        print(resultado)
+        return resultado
 
 
-registros_usuarios()
+
+
