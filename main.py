@@ -1,50 +1,58 @@
 from tkinter import *
 
 
-def on_enter(e):
-    entrar['background'] = '#ba0601'
-    cadastrar['background'] = '#ba0601'
+class Principal():
+    def entrar(self):
+        import projeto.window_adm as new
+        self.janela.destroy()
+        new.Window()
+
+    def on_enter(self, e):
+        self.entrar['background'] = '#ba0601'
+        self.cadastrar['background'] = '#ba0601'
+
+    def on_leave(self, e):
+        self.entrar['background'] = '#eb3b31'
+        self.cadastrar['background'] = '#eb3b31'
+
+    def __init__(self):
+        self.janela = Tk()
+        self.janela.configure(background='#fbb339')
+        self.janela.title('Modelo de Pizzaria')
+        self.janela.geometry('800x800')
+        self.janela.resizable(False, False)
+        self.imagem = PhotoImage(file='image.png')
+        self.foto = Label(self.janela, image=self.imagem)
+        self.foto.grid(row=0, column=0)
+
+        Label(self.janela, text='  Faça o Login ou Cadastre-se', fg='white', bg='#fbb339', font=('Century Gothic bold', 35), pady=30).grid(row=1, column=0)
+
+        self.firstframe = Frame(self.janela, bg='#fbb339')
+        Label(self.firstframe, text='  Usuário', font=('Century Gothic bold', 16), bg='#fbb339', padx=20).grid(row=0, column=0)
+        self.user = Entry(self.firstframe)
+        self.user.grid(row=0, column=1)
+        self.firstframe.grid(row=2, column=0)
+
+        self.secondframe = Frame(self.janela, bg='#fbb339')
+        Label(self.secondframe, text='Senha', font=('Century Gothic bold', 16), bg='#fbb339', padx=32, pady=10).grid(row=0, column=0)
+        self.password = Entry(self.secondframe, show='*')
+        self.password.grid(row=0, column=1)
+        self.secondframe.grid(row=3, column=0)
+
+        self.thirdframe = Frame(self.janela, bg='#fbb339', pady=20)
+        self.entrar = Button(self.thirdframe, text='Entrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f', command=self.entrar)
+        self.entrar.grid(row=0, column=0)
+        Label(self.thirdframe, bg='#fbb339', padx=10).grid(row=0, column=1)
+        self.cadastrar = Button(self.thirdframe, text='Cadastrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f')
+        self.cadastrar.grid(row=0, column=2)
+        self.thirdframe.grid(row=4, column=0)
+
+        self.entrar.bind("<Enter>", self.on_enter)
+        self.entrar.bind("<Leave>", self.on_leave)
+        self.cadastrar.bind("<Enter>", self.on_enter)
+        self.cadastrar.bind("<Leave>", self.on_leave)
+
+        self.janela.mainloop()
 
 
-def on_leave(e):
-    entrar['background'] = '#eb3b31'
-    cadastrar['background'] = '#eb3b31'
-
-
-janela = Tk()
-janela.configure(background='#fbb339')
-janela.title('Modelo de Pizzaria')
-janela.geometry('800x800')
-janela.resizable(False, False)
-imagem = PhotoImage(file='image.png')
-foto = Label(janela, image=imagem)
-foto.grid(row=0, column=0)
-
-Label(janela, text='  Faça o Login ou Cadastre-se', fg='white', bg='#fbb339', font=('Century Gothic bold', 35), pady=30).grid(row=1, column=0)
-
-firstframe = Frame(janela, bg='#fbb339')
-Label(firstframe, text='  Usuário', font=('Century Gothic bold', 16), bg='#fbb339', padx=20).grid(row=0, column=0)
-user = Entry(firstframe)
-user.grid(row=0, column=1)
-firstframe.grid(row=2, column=0)
-
-secondframe = Frame(janela, bg='#fbb339')
-Label(secondframe, text='Senha', font=('Century Gothic bold', 16), bg='#fbb339', padx=32, pady=10).grid(row=0, column=0)
-password = Entry(secondframe, show='*')
-password.grid(row=0, column=1)
-secondframe.grid(row=3, column=0)
-
-thirdframe = Frame(janela, bg='#fbb339', pady=20)
-entrar = Button(thirdframe, text='Entrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f')
-entrar.grid(row=0, column=0)
-Label(thirdframe, bg='#fbb339', padx=10).grid(row=0, column=1)
-cadastrar = Button(thirdframe, text='Cadastrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f')
-cadastrar.grid(row=0, column=2)
-thirdframe.grid(row=4, column=0)
-
-entrar.bind("<Enter>", on_enter)
-entrar.bind("<Leave>", on_leave)
-cadastrar.bind("<Enter>", on_enter)
-cadastrar.bind("<Leave>", on_leave)
-
-janela.mainloop()
+Principal()
