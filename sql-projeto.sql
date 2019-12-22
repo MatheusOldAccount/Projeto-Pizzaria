@@ -32,7 +32,6 @@ insert into produto values (default, 'Coca-Cola', 'Bebidas', '08.50');
 create table if not exists pedido(
 	id int not null auto_increment,
 	nome varchar(100) not null,
-	grupo varchar(100),
 	localEntrega varchar(500),
 	observacoes text,
     primary key(id)

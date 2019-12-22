@@ -2,6 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 
 
+def destruir():
+    exit()
+
+
 class Principal():
     def entrar(self):
         if len(self.user.get()) == 0 and len(self.password.get()) == 0:
@@ -25,7 +29,8 @@ class Principal():
         self.cadastrar['background'] = '#eb3b31'
 
     def __init__(self):
-        self.janela = Tk()
+        prin = self.janela = Tk()
+        prin.protocol("WM_DELETE_WINDOW", destruir)
         self.janela.configure(background='#fbb339')
         self.janela.title('Modelo de Pizzaria')
         self.janela.geometry('800x800')
