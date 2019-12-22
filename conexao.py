@@ -45,4 +45,23 @@ def cadastro_adm(nome, senha, sexo, endereco):
         messagebox.showinfo('Notificação', f'Usuário {nome} cadastrado com sucesso !')
 
 
+def registros_pedidos():
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute('select * from pedido;')
+            result = sql.fetchall()
+    except:
+        messagebox.showinfo('Erro', 'Não foi possível se conectar ao banco de dados')
+        exit()
+    else:
+        return result
 

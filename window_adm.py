@@ -25,7 +25,7 @@ class Window():
             self.layout = Frame(self.novajanela, width=800, height=400, bg='#1960a6')
             Label(self.layout, text=f'Usuário Logado: {user_now}', fg='white', bg='#1960a6', font=('Century Gothic bold', 16), pady=20).grid(row=0, column=0, columnspan=2)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Pedidos em Andamento', padx=5, pady=5).grid(row=1, column=0, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5).grid(row=1, column=1, padx=20, pady=20)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5, command=self.front_and_back_end_pedidos).grid(row=1, column=1, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastros', padx=5, pady=5, command=self.cadastros).grid(row=2, column=0, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastrar Novo Administrador', padx=5, pady=5, command=self.front_end_adm).grid(row=2, column=1, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Gerar Estatísticas', padx=5, pady=5).grid(row=3, column=0, padx=20, pady=20)
@@ -76,10 +76,24 @@ class Window():
         self.smallwindow.mainloop()
 
     def back_end_adm(self):
+        listanomes = []
+        listaauxiliar = []
+        busca = projeto.conexao.registros_usuarios()
+        for registros in busca:
+            listaauxiliar.append(registros['nome'])
+            listaauxiliar.append(registros['senha'])
+            listanomes.append(listaauxiliar[:])
+            listaauxiliar.clear()
+        self.verifica = False
+        for comparacoes in listanomes:
+            if self.n.get() == comparacoes[0] and self.s.get() == comparacoes[1]:
+                self.verifica = True
         if len(self.n.get()) == 0 or len(self.s.get()) == 0 or len(self.sex.get()) == 0 or len(self.e.get()) == 0:
             messagebox.showinfo('Erro', 'Algum(ns) do(s) campo(s) está(ão) vazio(s)')
         elif len(self.s.get()) <= 3:
             messagebox.showinfo('Erro', 'A senha deve conter ao menos quatro caracteres')
+        elif self.verifica:
+            messagebox.showinfo('Erro', 'Este usuário e senha já está cadastrado no banco de dados. Por favor, digite algum(ns) do(s) dado(s) diferente(s)')
         else:
             try:
                 self.genero = self.sex.get()[0].upper()
@@ -91,6 +105,7 @@ class Window():
                     messagebox.showinfo('Erro', 'O campo sexo deve ser preenchido com [M/F]')
                 else:
                     projeto.conexao.cadastro_adm(self.n.get(), self.s.get(), self.genero, self.e.get())
+                    self.tela.destroy()
 
     def front_end_adm(self):
         self.tela = Toplevel()
@@ -122,6 +137,47 @@ class Window():
         botao.HoverButton(self.encapsular, font=('Century Gothic bold', 16), text='Cadastrar', pady=5, padx=5, fg='white', bg='#d32016', command=self.back_end_adm, activebackground='#1960a6', activeforeground='white').grid(row=4, column=1, pady=10, padx=30)
 
         self.tela.mainloop()
+
+    def front_and_back_end_pedidos(self):
+        self.pedidos = Toplevel()
+        self.pedidos.title('Todos os pedidos já realizados')
+        self.pedidos.geometry('1200x400')
+
+        self.arvore = ttk.Treeview(self.pedidos, selectmode='browse', column=('id', 'namepe', 'namepro', 'user', 'password', 'place', 'obs'), show='headings')
+        self.arvore.pack(expand=True, fill='both')
+
+        self.arvore.column('id', width=10, minwidth=50)
+        self.arvore.heading('#1', text='Id')
+
+        self.arvore.column('namepe', width=100, minwidth=50)
+        self.arvore.heading('#2', text='Nome da Pessoa')
+
+        self.arvore.column('namepro', width=150, minwidth=50)
+        self.arvore.heading('#3', text='Produto(s)')
+
+        self.arvore.column('user', width=40, minwidth=50)
+        self.arvore.heading('#4', text='Usuário')
+
+        self.arvore.column('password', width=30, minwidth=50)
+        self.arvore.heading('#5', text='Senha')
+
+        self.arvore.column('place', width=100, minwidth=50)
+        self.arvore.heading('#6', text='Local de Entrega')
+
+        self.arvore.column('obs', width=200, minwidth=50)
+        self.arvore.heading('#7', text='Observações')
+
+        self.buscas = projeto.conexao.registros_pedidos()
+
+        valores = []
+
+        for e in self.buscas:
+            for dql in e.values():
+                valores.append(dql)
+            self.arvore.insert("", END, values=valores, tag='1')
+            valores.clear()
+
+        self.pedidos.mainloop()
 
 
 def verifica_login(usuario, senha):

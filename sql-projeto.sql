@@ -31,11 +31,16 @@ insert into produto values (default, 'Coca-Cola', 'Bebidas', '08.50');
 
 create table if not exists pedido(
 	id int not null auto_increment,
-	nome varchar(100) not null,
+	nome_pessoa_pedido varchar(100) not null,
+    produto_requerido varchar(200) not null,
+    usuario	varchar(80) not null,
+    senha varchar(20) not null,
 	localEntrega varchar(500),
 	observacoes text,
     primary key(id)
 ) engine = innoDB default charset = utf8;
+
+insert into pedido values (default, 'Leonaldo', 'pizza de calabresa, coca-cola', 'user', '1234', '-------', 'pizza sem cebola e sem tomate, coca de 2 litros');
 
 create table if not exists ProdutoPedidos (
 	id int not null auto_increment,
