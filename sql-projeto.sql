@@ -40,7 +40,8 @@ create table if not exists pedido(
     primary key(id)
 ) engine = innoDB default charset = utf8;
 
-insert into pedido values (default, 'Leonaldo', 'pizza de calabresa, coca-cola', 'user', '1234', '-------', 'pizza sem cebola e sem tomate, coca de 2 litros');
+insert into pedido values (default, 'Leonaldo', 'pizza de calabresa', 'user', '1234', '-------', 'pizza sem cebola e sem tomate, coca de 2 litros');
+insert into pedido values (default, 'Leonaldo', 'Coca-Cola', 'user', '1234', '-------', 'Coca de 1 litro');
 
 create table if not exists ProdutoPedidos (
 	id int not null auto_increment,
@@ -51,3 +52,6 @@ create table if not exists ProdutoPedidos (
     foreign key (id_pedido) references pedido (id),
     primary key(id)
 ) engine = innoDB default charset = utf8;
+
+insert into ProdutoPedidos values (default, '2019-12-22 13:35:00', '1', '1');
+insert into ProdutoPedidos values (default, '2019-12-22 14:00:00', '3', '2');

@@ -24,7 +24,7 @@ class Window():
             Label(self.novajanela, image=self.img).grid(row=0, column=0)
             self.layout = Frame(self.novajanela, width=800, height=400, bg='#1960a6')
             Label(self.layout, text=f'Usuário Logado: {user_now}', fg='white', bg='#1960a6', font=('Century Gothic bold', 16), pady=20).grid(row=0, column=0, columnspan=2)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Pedidos em Andamento', padx=5, pady=5).grid(row=1, column=0, padx=20, pady=20)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Pedidos em Andamento', padx=5, pady=5, command=PedidosAtuais).grid(row=1, column=0, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5, command=self.front_and_back_end_pedidos).grid(row=1, column=1, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastros', padx=5, pady=5, command=self.cadastros).grid(row=2, column=0, padx=20, pady=20)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastrar Novo Administrador', padx=5, pady=5, command=self.front_end_adm).grid(row=2, column=1, padx=20, pady=20)
@@ -153,7 +153,7 @@ class Window():
         self.arvore.heading('#2', text='Nome da Pessoa')
 
         self.arvore.column('namepro', width=150, minwidth=50)
-        self.arvore.heading('#3', text='Produto(s)')
+        self.arvore.heading('#3', text='Produto')
 
         self.arvore.column('user', width=40, minwidth=50)
         self.arvore.heading('#4', text='Usuário')
@@ -198,3 +198,53 @@ def verifica_login(usuario, senha):
     elif not senhafalsa:
         messagebox.showinfo('Erro', 'Senha incorreta')
     return verifica
+
+
+class PedidosAtuais():
+    def __init__(self):
+        self.interface = Tk()
+        self.interface.title('Todos os pedidos ainda não entregues')
+        self.interface.geometry('1045x250')
+        self.interface.configure(background='#fbb339')
+
+        botao.HoverButton(self.interface, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Colocar Produto como Entregue', padx=5, pady=5, command=self.entregue).grid(row=0, column=0, padx=20, pady=20)
+
+        self.arvorepedido = ttk.Treeview(self.interface, selectmode='browse', column=('id', 'datehour', 'id_product', 'id_request'), show='headings')
+
+        self.arvorepedido.column('id', width=10, minwidth=50)
+        self.arvorepedido.heading('#1', text='Id')
+
+        self.arvorepedido.column('datehour', width=250, minwidth=50)
+        self.arvorepedido.heading('#2', text='Data e Hora que o pedido foi realizado')
+
+        self.arvorepedido.column('id_product', width=200, minwidth=50)
+        self.arvorepedido.heading('#3', text='Produto')
+
+        self.arvorepedido.column('id_request', width=250, minwidth=50)
+        self.arvorepedido.heading('#4', text='Pessoa que fez o pedido')
+
+        preencher = projeto.conexao.registros_pedidos_atuais()
+        lista = list()
+        for consultas in preencher:
+            principal_id = consultas['id']
+            for valores in consultas.values():
+                lista.append(valores)
+            self.arvorepedido.insert("", END, values=lista, iid=principal_id, tag='1')
+            lista.clear()
+
+        self.arvorepedido.grid(row=0, column=1, columnspan=12)
+
+        self.interface.mainloop()
+
+    def entregue(self):
+        try:
+            iddeletar = int(self.arvorepedido.selection()[0])
+        except IndexError:
+            messagebox.showinfo('Erro', 'Nenhum pedido selecionado')
+        except Exception as error:
+            messagebox.showinfo('Erro', f'Não foi possível realizar a operação. Erro: {error}')
+        else:
+            projeto.conexao.deletar_produto(iddeletar)
+            self.interface.destroy()
+            PedidosAtuais()
+
