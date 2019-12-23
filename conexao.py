@@ -106,3 +106,86 @@ def deletar_produto(id):
         exit()
     else:
         messagebox.showinfo('Notificação', f'Pedido deletado')
+
+
+def registros_produtos():
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute('select * from produto;')
+            r = sql.fetchall()
+    except:
+        messagebox.showinfo('Erro', 'Não foi possível se conectar ao banco de dados')
+        exit()
+    else:
+        return r
+
+
+def operations_products(nome, grupo, preco):
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute(f'insert into produto values (default, "{nome}", "{grupo}", "{preco}");')
+            conexao.commit()
+    except Exception as error:
+        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {error}')
+        exit()
+    else:
+        messagebox.showinfo('Notificação', f'Produto {nome} cadastrado com sucesso!')
+
+def delete_products(unique):
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute(f'delete from produto where id = {unique}')
+            conexao.commit()
+    except Exception as error:
+        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {error}')
+        exit()
+    else:
+        messagebox.showinfo('Notificação', f'Produto excluído com sucesso!')
+
+
+def truncate_products():
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute(f'truncate table produto;')
+            conexao.commit()
+    except Exception as error:
+        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {error}')
+        exit()
+    else:
+        messagebox.showinfo('Notificação', f'Todos produtos foram excluídos com sucesso!')

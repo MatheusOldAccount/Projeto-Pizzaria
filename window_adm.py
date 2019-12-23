@@ -24,12 +24,13 @@ class Window():
             Label(self.novajanela, image=self.img).grid(row=0, column=0)
             self.layout = Frame(self.novajanela, width=800, height=400, bg='#1960a6')
             Label(self.layout, text=f'Usuário Logado: {user_now}', fg='white', bg='#1960a6', font=('Century Gothic bold', 16), pady=20).grid(row=0, column=0, columnspan=2)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Pedidos em Andamento', padx=5, pady=5, command=PedidosAtuais).grid(row=1, column=0, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5, command=self.front_and_back_end_pedidos).grid(row=1, column=1, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastros', padx=5, pady=5, command=self.cadastros).grid(row=2, column=0, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastrar Novo Administrador', padx=5, pady=5, command=self.front_end_adm).grid(row=2, column=1, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Gerar Estatísticas', padx=5, pady=5).grid(row=3, column=0, padx=20, pady=20)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Voltar', padx=5, pady=5, command=self.sair).grid(row=3, column=1, padx=20, pady=20)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Pedidos em Andamento', padx=5, pady=5, command=PedidosAtuais).grid(row=1, column=0, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5, command=self.front_and_back_end_pedidos).grid(row=1, column=1, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastros', padx=5, pady=5, command=self.cadastros).grid(row=2, column=0, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastrar Novo Administrador', padx=5, pady=5, command=self.front_end_adm).grid(row=2, column=1, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Gerar Estatísticas', padx=5, pady=5).grid(row=3, column=0, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Produtos', padx=5, pady=5, command=self.products).grid(row=3, column=1, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Voltar', padx=5, pady=5, command=self.sair).grid(row=4, column=0, padx=15, pady=15, columnspan=2)
             self.layout.grid(row=1, column=0)
             self.novajanela.mainloop()
         else:
@@ -178,6 +179,94 @@ class Window():
             valores.clear()
 
         self.pedidos.mainloop()
+
+    def products(self):
+        self.screen = Tk()
+        self.screen.configure(background='#1960a6')
+        self.screen.title('Produtos')
+        self.screen.geometry('1050x430')
+
+        self.conteudo_esquerdo = Frame(self.screen, bg='#1960a6', padx=50)
+        Label(self.conteudo_esquerdo, text='Cadastre os Produtos', bg='#1960a6', fg='white', font=('Century Gothic bold', 16), padx=20, pady=20).grid(row=0, column=0, columnspan=2)
+
+        Label(self.conteudo_esquerdo, text='Nome', bg='#1960a6', fg='white', font=('Century Gothic bold', 16), padx=20, pady=20).grid(row=1, column=0)
+        self.nomep = Entry(self.conteudo_esquerdo)
+        self.nomep.grid(row=1, column=1)
+
+        Label(self.conteudo_esquerdo, text='Grupo', bg='#1960a6', fg='white', font=('Century Gothic bold', 16), padx=20, pady=20).grid(row=2, column=0)
+        self.grupop = Entry(self.conteudo_esquerdo)
+        self.grupop.grid(row=2, column=1)
+
+        Label(self.conteudo_esquerdo, text='Preço', bg='#1960a6', fg='white', font=('Century Gothic bold', 16), padx=20, pady=20).grid(row=3, column=0)
+        self.precop = Entry(self.conteudo_esquerdo)
+        self.precop.grid(row=3, column=1)
+
+        botao.HoverButton(self.conteudo_esquerdo, bg='#1960a6', width=15, fg='white', font=('Century Gothic bold', 14), text='Cadastrar', command=self.acesso_produto).grid(row=4, column=0, padx=20, pady=20)
+        botao.HoverButton(self.conteudo_esquerdo, bg='#1960a6', width=15, fg='white', font=('Century Gothic bold', 14), text='Excluir', command=self.excluir_produto).grid(row=4, column=1, padx=20, pady=20)
+        '''
+        Esse botão permitiria chamar uma função permitiria p/ usar um truncate na tabela de produto, mas como foi usado uma ligação entre a tabela pedido e produto não irá funcionar, devido a integridade referencial providenciada pelas foreign key, 
+    então só deixarei o comando comentado mesmo
+        botao.HoverButton(self.conteudo_esquerdo, bg='#1960a6', width=15, fg='white', font=('Century Gothic bold', 14), text='Limpar Produtos', command=self.excluir_all).grid(row=5, column=0, columnspan=2, padx=20, pady=20)'''
+
+        self.conteudo_esquerdo.grid(row=0, column=0)
+
+        self.conteudo_direito = Frame(self.screen, bg='#fbb339',)
+
+        self.treeview = ttk.Treeview(self.conteudo_direito, selectmode='browse', column=('name', 'group', 'price'), show='headings')
+
+        self.treeview.column('name', width=200, minwidth=50, stretch=NO)
+        self.treeview.heading('#1', text='Nome')
+
+        self.treeview.column('group', width=200, minwidth=50, stretch=NO)
+        self.treeview.heading('#2', text='Grupo')
+
+        self.treeview.column('price', width=50, minwidth=50, stretch=NO)
+        self.treeview.heading('#3', text='Preço')
+
+        busca = projeto.conexao.registros_produtos()
+        listaprodutos = list()
+
+        for produto in busca:
+            listaprodutos.append(produto['nome'])
+            listaprodutos.append(produto['grupo'])
+            listaprodutos.append(produto['preco'])
+            self.treeview.insert("", END, iid=produto['id'], values=listaprodutos, tag='1')
+            listaprodutos.clear()
+
+        self.treeview.grid(row=0, column=0)
+
+        self.conteudo_direito.grid(row=0, column=2)
+
+        self.screen.mainloop()
+
+    def acesso_produto(self):
+        query = projeto.conexao.registros_produtos()
+        condicao = False
+        for elementos in query:
+            if elementos['nome'] == self.nomep.get():
+                condicao = True
+        if len(self.nomep.get()) == 0 or len(self.grupop.get()) == 0 or len(self.precop.get()) == 0:
+            messagebox.showinfo('Erro', 'Algum(ns) do(s) campo(s) está(ão) vazio(s)')
+        elif condicao:
+            messagebox.showinfo('Erro', 'Nome do produto já cadastrado')
+        else:
+            projeto.conexao.operations_products(self.nomep.get(), self.grupop.get(), self.precop.get())
+            self.screen.destroy()
+            self.products()
+
+    def excluir_produto(self):
+        value_id = int(self.treeview.selection()[0])
+        projeto.conexao.delete_products(value_id)
+        self.screen.destroy()
+        self.products()
+
+    '''Essa função permitiria usar um truncate na tabela de produto, mas como foi usado uma ligação entre a tabela pedido e produto não irá funcionar, devido a integridade referencial providenciada pelas foreign key, 
+    então só deixarei o comando comentado mesmo
+    def excluir_all(self):
+        if messagebox.askokcancel('Limpar Todos os Produtos', 'DESEJA EXCLUIR TODOS OS PRODUTOS ? NÃO HÁ VOLTA'):
+            projeto.conexao.truncate_products()
+            self.screen.destroy()
+            self.products()'''
 
 
 def verifica_login(usuario, senha):
