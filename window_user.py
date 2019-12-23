@@ -15,7 +15,10 @@ class User():
 
     def productos(self):
         from projeto.window_adm import user_now, senha_now
+        self.un = user_now
+        self.sn = senha_now
         self.screen = Tk()
+        self.screen.protocol("WM_DELETE_WINDOW", destruir)
         self.screen.configure(background='#fbb339')
         self.screen.title('Interface do Usuário')
         self.screen.geometry('630x600')
@@ -47,7 +50,7 @@ class User():
 
         self.treeview.grid(row=2, column=0, padx=50, pady=50, columnspan=2)
 
-        botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Comprar Produto', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white').grid(row=3, column=0, pady=10, padx=30)
+        botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Comprar Produto', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white', command=self.comprar_produto).grid(row=3, column=0, pady=10, padx=30)
         botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Voltar', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white', command=self.sair).grid(row=3, column=1, pady=10, padx=30)
 
         self.screen.mainloop()
@@ -56,6 +59,96 @@ class User():
         self.screen.destroy()
         import projeto.main as inicial
         inicial.Principal()
+
+    def comprar_produto(self):
+        all_products = projeto.conexao.registros_produtos()
+        try:
+            for elementos in all_products:
+                if elementos['id'] == int(self.treeview.selection()[0]):
+                    self.nome_produto = elementos['nome']
+                    break
+        except IndexError:
+            messagebox.showerror('Erro', 'Nenhum produto selecionado')
+        except Exception as erro:
+            messagebox.showerror('Erro', f'Erro: {erro}')
+        else:
+            self.visual = Toplevel()
+            self.visual.configure(background='#fbb339')
+            self.visual.title('Menu de Compra')
+            self.visual.geometry('500x300')
+            self.visual.resizable(False, False)
+
+            self.parte = Frame(self.visual, bg='#fbb339')
+            self.parte.grid(row=0, column=0)
+
+            Label(self.parte, font=('Century Gothic bold', 16), text='Nome Completo', bg='#fbb339', fg='white', padx=30, pady=10).grid(row=0, column=0)
+            self.noome = Entry(self.parte)
+            self.noome.grid(row=0, column=1)
+
+            Label(self.parte, font=('Century Gothic bold', 16), text='Local da Entrega', bg='#fbb339', fg='white', padx=30, pady=10).grid(row=1, column=0)
+            self.local = Entry(self.parte)
+            self.local.grid(row=1, column=1)
+
+            Label(self.parte, font=('Century Gothic bold', 16), text='Observações (se houverem)', bg='#fbb339', fg='white', padx=30, pady=10).grid(row=2, column=0)
+            self.obs = Entry(self.parte)
+            self.obs.grid(row=2, column=1)
+
+            botao.HoverButton(self.parte, font=('Century Gothic bold', 16), text='Cadastrar', pady=5, padx=5, fg='white', bg='#d32016', command=self.back_end_produto, activebackground='#1960a6', activeforeground='white').grid(row=3, column=0, pady=50, padx=50, columnspan=2)
+
+            self.visual.mainloop()
+
+    def back_end_produto(self):
+        from datetime import datetime as datahora
+        sistem = datahora.now().strftime('%Y-%m-%d %H:%M:%S')
+        if len(self.noome.get()) == 0 and len(self.local.get()) == 0 and len(self.obs.get()) == 0:
+            messagebox.showinfo('Erro', 'Todos os campos estão vazios')
+        elif len(self.noome.get()) == 0 and len(self.local.get()) == 0:
+            messagebox.showinfo('Erro', 'Os campos nome e local estão vazios')
+        elif len(self.noome.get()) == 0 and len(self.obs.get()) == 0:
+            messagebox.showinfo('Erro', 'Os campos nome e observação estão vazios')
+        elif len(self.local.get()) == 0 and len(self.obs.get()) == 0:
+            messagebox.showinfo('Erro', 'Os campos local e observação estão vazios')
+        elif len(self.local.get()) == 0:
+            messagebox.showinfo('Erro', 'O campo local está vazio')
+        elif len(self.noome.get()) == 0:
+            messagebox.showinfo('Erro', 'O campo nome está vazio')
+        elif len(self.obs.get()) == 0:
+            # print(f'nome pessoa = {self.noome.get()}\nproduto_requerido = {self.nome_produto}\nusuario = {self.un}\nsenha = {self.sn}\nlocal = {self.local.get()}\nobs = \ndatahora = {sistem}')
+            try:
+                projeto.conexao.cadastro_pedido(self.noome.get(), self.nome_produto, self.un, self.sn, self.local.get(), '')
+            except Exception as erro:
+                messagebox.showerror('Erro', 'Não foi possível se conectar ao banco de dados')
+                exit()
+            else:
+                try:
+                    pedidos = projeto.conexao.registros_pedidos()
+                    for linhas in pedidos:
+                        if self.noome.get() == linhas['nome_pessoa_pedido'] and self.nome_produto == linhas['produto_requerido'] and self.un == linhas['usuario'] and self.sn == linhas['senha'] and self.local.get() == linhas['localEntrega'] and len(linhas['observacoes']) == 0:
+                            self.myid = linhas['id']
+                            self.iddoproduto = int(self.treeview.selection()[0])
+                    projeto.conexao.cadastro_produto_pedidos(sistem, self.iddoproduto, self.myid)
+                except Exception as erro:
+                    messagebox.showerror('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
+                    exit()
+                else:
+                    messagebox.showinfo('Notificação', 'Produto comprado!')
+                    self.visual.destroy()
+        else:
+            # print(f'nome pessoa = {self.noome.get()}\nproduto_requerido = {self.nome_produto}\nusuario = {self.un}\nsenha = {self.sn}\nlocal = {self.local.get()}\nobs = {self.obs.get()}\ndatahora = {sistem}')
+            try:
+                projeto.conexao.cadastro_pedido(self.noome.get(), self.nome_produto, self.un, self.sn, self.local.get(), self.obs.get())
+                pedidos = projeto.conexao.registros_pedidos()
+                for linhas in pedidos:
+                    if self.noome.get() == linhas['nome_pessoa_pedido'] and self.nome_produto == linhas['produto_requerido'] and self.un == linhas['usuario'] and self.sn == linhas['senha'] and self.local.get() == linhas['localEntrega'] and self.obs.get() == linhas['observacoes']:
+                        self.myid = linhas['id']
+                        self.iddoproduto = int(self.treeview.selection()[0])
+                projeto.conexao.cadastro_produto_pedidos(sistem, self.iddoproduto, self.myid)
+            except Exception as erro:
+                messagebox.showerror('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
+                exit()
+            else:
+                messagebox.showinfo('Notificação', 'Produto comprado!')
+                self.visual.destroy()
 
 
 
@@ -70,7 +163,7 @@ class Criacao():
         self.encapsular = Frame(self.tela, bg='#fbb339')
         self.encapsular.grid(row=0, column=0)
 
-        Label(self.encapsular, font=('Century Gothic bold', 16), text='Nome', bg='#fbb339', fg='white', padx=30, pady=10).grid(row=0, column=0)
+        Label(self.encapsular, font=('Century Gothic bold', 16), text='Usuário', bg='#fbb339', fg='white', padx=30, pady=10).grid(row=0, column=0)
         self.n = Entry(self.encapsular)
         self.n.grid(row=0, column=1)
 

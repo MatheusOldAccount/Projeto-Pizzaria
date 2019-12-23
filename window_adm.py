@@ -276,15 +276,23 @@ class Window():
         buscaprodutos = projeto.conexao.registros_produtos()
         listanomes = []
         listavalores = []
+        listaprodutos = []
         for pedidos in busca:
             if pedidos['produto_requerido'].lower() not in listanomes:
                 listanomes.append(pedidos['produto_requerido'].lower())
-        for nomes in listanomes:
+        for produtos in buscaprodutos:
+            for nomes in listanomes:
+                if produtos["nome"].lower() == nomes:
+                    listaprodutos.append(produtos["preco"])
+        for pos, nomes in enumerate(listanomes):
             valor = 0
-            for query in buscaprodutos:
-                if query['nome'].lower() == nomes:
-                    valor += query['preco']
-            listavalores.append(valor)
+            for comprados in busca:
+                if comprados["produto_requerido"].lower() == nomes:
+                    valor += listaprodutos[pos]
+            if valor == 0:
+                continue
+            else:
+                listavalores.append(valor)
         grafico.plot(listanomes, listavalores)
         grafico.xlabel('Produtos Vendidos')
         grafico.ylabel('Soma dos preços de todas unidades vendidas dos produtos')

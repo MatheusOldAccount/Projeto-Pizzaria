@@ -192,7 +192,7 @@ def delete_products(unique):
         messagebox.showinfo('Notificação', f'Produto excluído com sucesso!')
 
 
-def truncate_products():
+def cadastro_pedido(nome, produto, usuario, senha, local, observacoes):
     conexao = database.connect(
         host='localhost',
         user='root',
@@ -204,10 +204,28 @@ def truncate_products():
 
     try:
         with conexao.cursor() as sql:
-            sql.execute(f'truncate table produto;')
+            sql.execute(f'insert into pedido values (default, "{nome}", "{produto}", "{usuario}", "{senha}", "{local}", "{observacoes}");')
             conexao.commit()
-    except Exception as error:
-        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {error}')
+    except Exception as erro:
+        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
+        print(erro)
         exit()
-    else:
-        messagebox.showinfo('Notificação', f'Todos produtos foram excluídos com sucesso!')
+
+
+def cadastro_produto_pedidos(datah, idproduto, idpedido):
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute(f'insert into ProdutoPedidos values (default, "{datah}", "{idproduto}", "{idpedido}");')
+            conexao.commit()
+    except Exception as erro:
+        messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
+        exit()
