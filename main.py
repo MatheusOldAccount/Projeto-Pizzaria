@@ -20,6 +20,10 @@ class Principal():
                 self.janela.destroy()
                 new.Window()
 
+    def criar(self):
+        import projeto.window_user as usuario
+        usuario.Criacao()
+
     def on_enter(self, e):
         self.entrar['background'] = '#ba0601'
         self.cadastrar['background'] = '#ba0601'
@@ -57,7 +61,7 @@ class Principal():
         self.entrar = Button(self.thirdframe, text='Entrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f', command=self.entrar)
         self.entrar.grid(row=0, column=0)
         Label(self.thirdframe, bg='#fbb339', padx=10).grid(row=0, column=1)
-        self.cadastrar = Button(self.thirdframe, text='Cadastrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f')
+        self.cadastrar = Button(self.thirdframe, text='Cadastrar', width=20, bg='#eb3b31', font=('Century Gothic bold', 10), fg='white', activeforeground='yellow', activebackground='#347e1f', command=self.criar)
         self.cadastrar.grid(row=0, column=2)
         self.thirdframe.grid(row=4, column=0)
 

@@ -3,8 +3,9 @@ from tkinter import ttk
 import projeto.conexao
 from tkinter import messagebox
 import projeto.button as botao
+import projeto.window_user as usuario
 valnivel = 0
-user_now = ''
+user_now = senha_now = ''
 
 
 def destruir():
@@ -34,8 +35,7 @@ class Window():
             self.layout.grid(row=1, column=0)
             self.novajanela.mainloop()
         else:
-            print('tchau')
-            exit()
+            usuario.User()
 
     def sair(self):
         self.novajanela.destroy()
@@ -98,7 +98,6 @@ class Window():
         else:
             try:
                 self.genero = self.sex.get()[0].upper()
-                print(self.genero)
             except:
                 messagebox.showinfo('Erro', 'O campo sexo deve ser preenchido com [M/F]')
             else:
@@ -242,6 +241,7 @@ class Window():
     def acesso_produto(self):
         query = projeto.conexao.registros_produtos()
         condicao = False
+        self.valpreco = self.precop.get().replace(',', '.')
         for elementos in query:
             if elementos['nome'] == self.nomep.get():
                 condicao = True
@@ -249,8 +249,10 @@ class Window():
             messagebox.showinfo('Erro', 'Algum(ns) do(s) campo(s) está(ão) vazio(s)')
         elif condicao:
             messagebox.showinfo('Erro', 'Nome do produto já cadastrado')
+        elif ('.' not in self.valpreco and len(self.valpreco) > 2) or len(self.precop.get()) > 5:
+            messagebox.showinfo('Erro', 'Digite o preço com no máximo 4 dígitos, tendo duas casas decimais. Exemplo: (80,00 ou 71.11 ou 50 ou 1 ou 70,0)')
         else:
-            projeto.conexao.operations_products(self.nomep.get(), self.grupop.get(), self.precop.get())
+            projeto.conexao.operations_products(self.nomep.get(), self.grupop.get(), self.valpreco)
             self.screen.destroy()
             self.products()
 
@@ -290,7 +292,7 @@ class Window():
 
 
 def verifica_login(usuario, senha):
-    global valnivel, user_now
+    global valnivel, user_now, senha_now
     registros = projeto.conexao.registros_usuarios()
     verifica = usuariofalso = senhafalsa = False
     for elementos in registros:
@@ -298,6 +300,7 @@ def verifica_login(usuario, senha):
             verifica = usuariofalso = senhafalsa = True
             valnivel = int(elementos['nivel'])
             user_now = elementos['nome']
+            senha_now = elementos['senha']
         elif elementos['nome'] == usuario:
             usuariofalso = True
         elif elementos['senha'] == senha:
