@@ -28,7 +28,7 @@ class Window():
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Todos os Pedidos', padx=5, pady=5, command=self.front_and_back_end_pedidos).grid(row=1, column=1, padx=15, pady=15)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastros', padx=5, pady=5, command=self.cadastros).grid(row=2, column=0, padx=15, pady=15)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Cadastrar Novo Administrador', padx=5, pady=5, command=self.front_end_adm).grid(row=2, column=1, padx=15, pady=15)
-            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Gerar Estatísticas', padx=5, pady=5).grid(row=3, column=0, padx=15, pady=15)
+            botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Gerar Estatísticas', padx=5, pady=5, command=self.estatistica).grid(row=3, column=0, padx=15, pady=15)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Produtos', padx=5, pady=5, command=self.products).grid(row=3, column=1, padx=15, pady=15)
             botao.HoverButton(self.layout, width=25, bg='#1960a6', fg='white', font=('Century Gothic bold', 14), text='Voltar', padx=5, pady=5, command=self.sair).grid(row=4, column=0, padx=15, pady=15, columnspan=2)
             self.layout.grid(row=1, column=0)
@@ -267,6 +267,26 @@ class Window():
             projeto.conexao.truncate_products()
             self.screen.destroy()
             self.products()'''
+
+    def estatistica(self):
+        import matplotlib.pyplot as grafico
+        busca = projeto.conexao.registros_pedidos()
+        buscaprodutos = projeto.conexao.registros_produtos()
+        listanomes = []
+        listavalores = []
+        for pedidos in busca:
+            if pedidos['produto_requerido'].lower() not in listanomes:
+                listanomes.append(pedidos['produto_requerido'].lower())
+        for nomes in listanomes:
+            valor = 0
+            for query in buscaprodutos:
+                if query['nome'].lower() == nomes:
+                    valor += query['preco']
+            listavalores.append(valor)
+        grafico.plot(listanomes, listavalores)
+        grafico.xlabel('Produtos Vendidos')
+        grafico.ylabel('Soma dos preços de todas unidades vendidas dos produtos')
+        grafico.show()
 
 
 def verifica_login(usuario, senha):
