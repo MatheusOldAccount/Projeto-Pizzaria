@@ -127,7 +127,7 @@ def deletar_produto(id):
         messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
         exit()
     else:
-        messagebox.showinfo('Notificação', f'Pedido deletado')
+        messagebox.showinfo('Notificação', f'Pedido entregue')
 
 
 def registros_produtos():
@@ -229,3 +229,24 @@ def cadastro_produto_pedidos(datah, idproduto, idpedido):
     except Exception as erro:
         messagebox.showinfo('Erro', f'Não foi possível se conectar ao banco de dados: {erro}')
         exit()
+
+
+def historico(u, s):
+    conexao = database.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='projeto_db',
+        charset='utf8mb4',
+        cursorclass=database.cursors.DictCursor
+    )
+
+    try:
+        with conexao.cursor() as sql:
+            sql.execute(f'select * from pedido where usuario = "{u}" and senha = "{s}";')
+            result = sql.fetchall()
+    except:
+        messagebox.showinfo('Erro', 'Não foi possível se conectar ao banco de dados')
+        exit()
+    else:
+        return result

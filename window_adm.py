@@ -277,25 +277,31 @@ class Window():
         listanomes = []
         listavalores = []
         listaprodutos = []
+        listaauxiliar = []
         for pedidos in busca:
             if pedidos['produto_requerido'].lower() not in listanomes:
                 listanomes.append(pedidos['produto_requerido'].lower())
         for produtos in buscaprodutos:
             for nomes in listanomes:
                 if produtos["nome"].lower() == nomes:
-                    listaprodutos.append(produtos["preco"])
+                    listaauxiliar.append(produtos["nome"].lower())
+                    listaauxiliar.append(produtos["preco"])
+                    listaprodutos.append(listaauxiliar[:])
+                    listaauxiliar.clear()
         for pos, nomes in enumerate(listanomes):
             valor = 0
             for comprados in busca:
                 if comprados["produto_requerido"].lower() == nomes:
-                    valor += listaprodutos[pos]
+                    for c in listaprodutos:
+                        if c[0] == nomes:
+                            valor += c[1]
             if valor == 0:
                 continue
             else:
                 listavalores.append(valor)
         grafico.plot(listanomes, listavalores)
         grafico.xlabel('Produtos Vendidos')
-        grafico.ylabel('Soma dos preços de todas unidades vendidas dos produtos')
+        grafico.ylabel('Lucro em reais sobre cada produto vendido')
         grafico.show()
 
 

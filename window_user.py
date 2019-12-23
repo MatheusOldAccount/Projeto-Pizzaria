@@ -21,7 +21,7 @@ class User():
         self.screen.protocol("WM_DELETE_WINDOW", destruir)
         self.screen.configure(background='#fbb339')
         self.screen.title('Interface do Usuário')
-        self.screen.geometry('630x600')
+        self.screen.geometry('630x650')
 
         Label(self.screen, text=f'Usuário Logado: {user_now}', fg='white', bg='#e0a33d', font=('Century Gothic bold', 16), pady=20).grid(row=0, column=0, columnspan=2, pady=20)
 
@@ -52,6 +52,7 @@ class User():
 
         botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Comprar Produto', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white', command=self.comprar_produto).grid(row=3, column=0, pady=10, padx=30)
         botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Voltar', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white', command=self.sair).grid(row=3, column=1, pady=10, padx=30)
+        botao.HoverButton(self.screen, font=('Century Gothic bold', 16), text='Histórico de Compras', pady=5, padx=5, fg='white', bg='#d32016', activebackground='#810e07', width=20, activeforeground='white', command=self.historico).grid(row=4, column=0, pady=10, padx=30, columnspan=2)
 
         self.screen.mainloop()
 
@@ -59,6 +60,40 @@ class User():
         self.screen.destroy()
         import projeto.main as inicial
         inicial.Principal()
+
+    def historico(self):
+        consulta = projeto.conexao.historico(self.un, self.sn)
+        self.smallwindow = Toplevel()
+        self.smallwindow.geometry('900x400')
+        self.smallwindow.title('Todos os Usuários Cadastrados')
+        self.smallwindow.grid_rowconfigure(0, weight=1)
+        self.smallwindow.grid_columnconfigure(0, weight=1)
+
+        tree = ttk.Treeview(self.smallwindow, selectmode='browse', column=('npp', 'pr', 'le', 'o'), show='headings')
+        tree.pack(expand=True, fill='both')
+
+        tree.column('npp', minwidth=50, width=100, stretch=NO)
+        tree.heading('#1', text='Nome')
+
+        tree.column('pr', minwidth=50, width=200, stretch=NO)
+        tree.heading('#2', text='Produto')
+
+        tree.column('le', minwidth=50, width=300, stretch=NO)
+        tree.heading('#3', text='Local de Entrega')
+
+        tree.column('o', minwidth=50, width=300, stretch=NO)
+        tree.heading('#4', text='Observações')
+
+        lista_auxiliar = list()
+        for registros in consulta:
+            lista_auxiliar.append(registros['nome_pessoa_pedido'])
+            lista_auxiliar.append(registros['produto_requerido'])
+            lista_auxiliar.append(registros['localEntrega'])
+            lista_auxiliar.append(registros['observacoes'])
+            tree.insert("", END, values=lista_auxiliar, tag='1')
+            lista_auxiliar.clear()
+
+        self.smallwindow.mainloop()
 
     def comprar_produto(self):
         all_products = projeto.conexao.registros_produtos()
@@ -93,7 +128,7 @@ class User():
             self.obs = Entry(self.parte)
             self.obs.grid(row=2, column=1)
 
-            botao.HoverButton(self.parte, font=('Century Gothic bold', 16), text='Cadastrar', pady=5, padx=5, fg='white', bg='#d32016', command=self.back_end_produto, activebackground='#1960a6', activeforeground='white').grid(row=3, column=0, pady=50, padx=50, columnspan=2)
+            botao.HoverButton(self.parte, font=('Century Gothic bold', 16), text='Comprar', pady=5, padx=5, fg='white', bg='#d32016', command=self.back_end_produto, activebackground='#1960a6', activeforeground='white').grid(row=3, column=0, pady=50, padx=50, columnspan=2)
 
             self.visual.mainloop()
 
