@@ -10,10 +10,12 @@ Para utilizar este programa, segundamente, é necessário executar o script SQL 
 
 Usuário administrador:
 usuário >> admin
+
 senha >> 1234
 
 Usuário normal:
 usuário >> user
+
 senha >> 1234
 
 Além disso já existem alguns produtos e pedidos criados no script SQL para o programa ser executado e já haver alguns registros.
