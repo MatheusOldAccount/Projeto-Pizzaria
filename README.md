@@ -19,7 +19,7 @@ usuário >> user
 senha >> 1234
 
 Além disso já existem alguns produtos e pedidos criados no script SQL para o programa ser executado e já haver alguns registros.
-De resto é só utilizar o próprio sistema para realizar e testar suas funcionalidades, sendo isso algo bem intuitivo e fácil de se fazer.
+De resto é só utilizar o próprio sistema para realizar e testar suas funcionalidades, sendo isso algo bem intuitivo e fácil de se fazer, bastando executar o main.py que é o arquivo principal e os outros são módulos separados para não concentrar todo código em um único arquivo.
 
 OBS: Todas imagens utilizadas foram pegas do google imagens, sendo que algumas delas foram modificadas. Isto foi feito pois o projeto não tem nenhum fim comercial como já dito, apenas fins educacionais (de estudo), mas todos os direitos das imagens são reservados para seus criadores.
 
